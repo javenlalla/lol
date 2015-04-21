@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Images</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    <body>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <script src="js/vendor/underscore.min.js"></script>
+        <script src="js/vendor/mustache.min.js"></script>
+        <script src="js/vendor/backbone.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+        
+        <script type="text/html" id="imageView">
+            <span>{{name}}</span>
+            
+            {{#hasTags}}
+                <ul class="tags">
+                    {{#tags}}
+                        <li>{{.}}</li>
+                    {{/tags}}
+                </ul>
+            {{/hasTags}}
+            
+            <button id="edit">Edit</button>
+            <button id="delete">Delete</button>
+        </script>
+        
+        <script type="text/html" id="imagesView">
+            <input type="text" id="newImageUrl" placeholder="Image Url" />
+            <input type="text" id="newImage" placeholder="Name" />
+            <input type="text" id="newImageTags" placeholder="tag1, tag2, tag3, etc..."/>
+            <button id="addNewImage">Add</button>
+            
+            <ul id="images"></ul>
+        </script>
+        
+        <script type="text/html" id="editImageView">
+            <input type="text" value="{{name}}" class="updateName" />
+            <input type="text" value="{{tagsString}}" class="updateTags" placeholder="tag1, tag2, tag3, etc.." />
+            
+            <button id="save">Save</button>
+        </script>
+
+    </body>
+</html>
