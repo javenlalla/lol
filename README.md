@@ -11,3 +11,7 @@ composer require "doctrine/mongodb-odm=~1.0.0-BETA10@dev"
 sudo apt-get update
 sudo apt-get install php5-dev
 sudo pecl install mongo
+
+Cache
+sudo pecl install apc OR sudo apt-get install php-apc
+sudo service apache2 restart

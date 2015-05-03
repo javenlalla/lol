@@ -23,13 +23,12 @@ $loader->add('Controllers', '../app');
 $loader->add('Components', '../app');
 
 $app = new \Slim\Slim( array(
-    'log.enabled' => true,
+    // 'debug'         => false,
+    'log.enabled'   => true,
     'slim.errors'   => "../log/app.log",
-    'log.level' =>      \Slim\Log::DEBUG,
-    'log.writer' => new \Slim\LogWriter(fopen('../log/app.log', 'a'))
+    'log.level'     => \Slim\Log::DEBUG,
+    'log.writer'    => new \Slim\LogWriter(fopen('../log/app.log', 'a'))
 ));
-
-// $app->log->error('ru oh');
 
 $app->container->singleton('db', function () {
     $connection = new Connection();
@@ -59,6 +58,13 @@ $app->get('/api/images', 'Controllers\ImagesController:getAllImages');
 $app->post('/api/images', 'Controllers\ImagesController:createImage');
 $app->put('/api/images/:id', 'Controllers\ImagesController:updateImage');
 $app->delete('/api/images/:id', 'Controllers\ImagesController:deleteImage');
+
+$app->error(function (\Exception $e) use ($app) {
+    echo json_encode(array(
+        'code'  => 500,
+        'error' => $e->getMessage()
+    ));
+});
 
 $app->run();
 
