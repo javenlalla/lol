@@ -30,31 +30,38 @@ class ImagesController extends ControllerAbstract
         $params = $this->_getRequestParams();
     
         if(!empty($params->name)) {
-            $name = trim($params->name);
             $url = trim($params->url);
-            $tags = explode(",", $params->tags);
-            
-            $newImage = new Image($name);
-            
-            foreach($tags as $tag) {
-                $newImage->addTag(trim($tag));
-            }
             
             $fileDownloader = new FileDownloader();
-            $fileDownloader->download($url);
-            die;
+            $downloadedFilename = $fileDownloader->download($url);
             
-            $this->_app->db->persist($newImage);
-            $this->_app->db->flush();
+            if($downloadedFilename !== false) {
+                $name = trim($params->name);
+                $tags = explode(",", $params->tags);
+                
+                $newImage = new Image($name);
+                
+                foreach($tags as $tag) {
+                    $newImage->addTag(trim($tag));
+                }
+                
+                $newImage->setFilename($downloadedFilename);
+                
+                $this->_app->db->persist($newImage);
+                $this->_app->db->flush();
+                
+                $imageArray = array(
+                    'id'        => $newImage->getId(),
+                    'name'      => $newImage->getName(),
+                    'filename'  => $newImage->getFilename(),
+                    'tags'      => $newImage->getTags()
+                );
+                
+                return $this->_respond($imageArray);
+            }
             
-            $imageArray = array(
-                'id'        => $newImage->getId(),
-                'name'      => $newImage->getName(),
-                'filename'  => $newImage->getFilename(),
-                'tags'      => $newImage->getTags()
-            );
+            return $this->_respond(array(), 500, "Unable to download file from " . $url . ".");
             
-            return $this->_respond($imageArray);
         }
         
         return $this->_respond(array(), 400, "Invalid name provided.");
