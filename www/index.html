@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
         <!--<link rel="stylesheet" href="css/main.css">-->
     </head>
-    <body>
+    <body style="background-color: #F0F0EF">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
         <script src="js/vendor/underscore.min.js"></script>
@@ -24,19 +24,23 @@
         <script src="js/main.js"></script>
         
         <script type="text/html" id="imageView">
-            <span>{{name}}</span>
-            <img src ="i/{{filename}}" alt="{{name}}">
-            
+            <h1>{{name}}</h1>
+            <button id="edit" class="btn btn-primary">Edit</button>
+            <button id="delete" class="btn btn-danger">Delete</button>
             {{#hasTags}}
-                <ul class="tags">
+                <div class="tags">
+                    {{#tags}}
+                        <span class="bg-info">{{.}}</span>
+                    {{/tags}}
+                </div>
+                <!--<ul class="tags">
                     {{#tags}}
                         <li>{{.}}</li>
                     {{/tags}}
-                </ul>
+                </ul>-->
             {{/hasTags}}
             
-            <button id="edit">Edit</button>
-            <button id="delete">Delete</button>
+            <img src ="i/{{filename}}" alt="{{name}}">
         </script>
         
         <script type="text/html" id="imagesView">
@@ -56,7 +60,7 @@
                         <button id="addNewImage" class="btn btn-default">Add</button>
                     </form>
                     
-                    <ul id="images"></ul>
+                    <ul id="images" class="list-unstyled"></ul>
                 </div>
             </div>
         </script>
