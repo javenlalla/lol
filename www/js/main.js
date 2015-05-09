@@ -6,14 +6,14 @@
  */
 
 var Image = Backbone.Model.extend({
-    urlRoot: "https://images-javenlalla.c9.io/www/index.php/api/images",
+    urlRoot: "index.php/api/images",
     
 });
 
 var Images = Backbone.Collection.extend({
     model: Image,
     
-    url: "https://images-javenlalla.c9.io/www/index.php/api/images"
+    url: "index.php/api/images"
 });
 
 
