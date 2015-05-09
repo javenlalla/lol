@@ -157,6 +157,8 @@ var ImageView = Backbone.View.extend({
 // });
 
 var ImagesView = Backbone.View.extend({
+    className   : 'container-fluid',
+    
     initialize: function(options) {
         // console.log(options);
         
