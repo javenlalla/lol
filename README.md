@@ -15,3 +15,7 @@ sudo pecl install mongo
 Cache
 sudo pecl install apc OR sudo apt-get install php-apc
 sudo service apache2 restart
+
+
+After pulling down repo:
+composer install
