@@ -38,4 +38,9 @@ sudo service apache2 restart
 #After Cloning Repo
 chown -R www-data:www-data  
 
-composer install  
+composer install 
+
+#Additional Notes
+sudo rm /var/lib/mongodb/mongod.lock    
+sudo service mongodb restart    
+ 
