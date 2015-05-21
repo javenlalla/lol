@@ -277,3 +277,11 @@ textarea {
         page-break-after: avoid;
     }
 }
+
+/*
+ * Custom Styling
+ */
+ 
+body {
+    padding-top: 55px;
+}
