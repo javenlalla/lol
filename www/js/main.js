@@ -190,6 +190,8 @@ var ImagesView = Backbone.View.extend({
     },
     
     onAddNewImage: function(e) {
+        e.preventDefault();
+        
         var newImageUrl = $("#newImageUrl").val();
         var newImageName = $("#newImage").val();
         var newImageTags = $("#newImageTags").val();
