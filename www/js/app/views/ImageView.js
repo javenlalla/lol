@@ -1,8 +1,14 @@
 var ImageView = Backbone.View.extend({
     tagName: "li",
     
+    options: {
+        setId: true
+    },
+    
     initialize: function(options) {
         this.model.on("change", this.render, this);
+        
+        this.options = options;
     },
     
     events: {
@@ -12,7 +18,9 @@ var ImageView = Backbone.View.extend({
     },
     
     render: function() {
-        this.$el.attr('id', this.model.id);
+        if(this.options.setId === true) {
+            this.$el.attr('id', this.model.id);
+        }
         
         var template = $("#imageView").html();
         

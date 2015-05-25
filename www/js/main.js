@@ -13,7 +13,24 @@ var AppRouter = Backbone.Router.extend({
     },
     
     homeAction: function() {
-        console.log('here');
+        //@TODO, move this Model to it's own JS file.
+        var RandomImage = Backbone.Model.extend({
+            url: "index.php/api/images/random",
+        });
+        
+        var image = new RandomImage();
+        image.fetch();
+        
+        //@TODO Refactor random image heading.
+        var imageView = new ImageView({
+            model: image,
+            el: "#content",
+            setId: false
+        });
+        
+        imageView.render();
+        
+        $("#content").prepend("<h1>Random Image</h1>");
     },
     
     browseAction: function() {
