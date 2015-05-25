@@ -7,6 +7,34 @@ use Components\FileDownloader;
 
 class ImagesController extends ControllerAbstract
 {
+    public function getRandomImage()
+    {
+        $imagesCount = $this->_app->db->createQueryBuilder('Models\Image')
+            ->count()
+            ->eagerCursor(true)
+            ->getQuery()
+            ->execute();
+        
+        $imagesCount--;
+        
+        $randomIndex = rand(0, $imagesCount);
+        
+        $image = $this->_app->db->createQueryBuilder('Models\Image')
+            ->limit(1)
+            ->skip($randomIndex)
+            ->getQuery()
+            ->getSingleResult();
+        
+        return $this->_respond(
+            array(
+                'id'        => $image->getId(),
+                'name'      => $image->getName(),
+                'filename'  => $image->getFilename(),
+                'tags'      => $image->getTags()
+            )
+        );
+    }
+    
     public function getAllImages()
     {
         $images = $this->_app->db->getRepository('Models\Image')->findAll();

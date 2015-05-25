@@ -54,6 +54,8 @@ $app->container->singleton('db', function () {
 
 $app->get('/hello/:name', 'Controllers\ImagesController:hello');
 
+$app->get('/api/images/random/', 'Controllers\ImagesController:getRandomImage');
+
 $app->get('/api/images', 'Controllers\ImagesController:getAllImages');
 $app->post('/api/images', 'Controllers\ImagesController:createImage');
 $app->put('/api/images/:id', 'Controllers\ImagesController:updateImage');
