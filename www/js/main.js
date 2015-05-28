@@ -55,7 +55,6 @@ $(document).ready(function() {
     
     var router = new AppRouter();
     Backbone.history.start();
-    router.navigate('browse', {trigger: true});
 
 });
 
