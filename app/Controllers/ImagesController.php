@@ -10,6 +10,7 @@ class ImagesController extends ControllerAbstract
 {
     public function getRandomImage()
     {
+        //@TODO: Exclude NSWF Images
         $imagesCount = $this->_app->db->createQueryBuilder('Models\Image')
             ->count()
             ->eagerCursor(true)
@@ -46,6 +47,7 @@ class ImagesController extends ControllerAbstract
                 'id'        => $image->getId(),
                 'name'      => $image->getName(),
                 'filename'  => $image->getFilename(),
+                'nsfw'      => $image->getNsfw(),
                 'tags'      => $image->getTags()
             );
         }
@@ -57,7 +59,7 @@ class ImagesController extends ControllerAbstract
     {
         //@TODO: Add validation.
         $params = $this->_getRequestParams();
-    
+        
         if(!empty($params->name)) {
             $url = trim($params->url);
             
@@ -76,6 +78,12 @@ class ImagesController extends ControllerAbstract
                 
                 $newImage->setFilename($downloadedFilename);
                 
+                if($params->nsfw !== true) {
+                    $newImage->setNsfw(0);
+                } else {
+                    $newImage->setNsfw(1);
+                }
+                
                 $newImage->setCreated(new DateTime());
                 
                 $this->_app->db->persist($newImage);
@@ -85,6 +93,7 @@ class ImagesController extends ControllerAbstract
                     'id'        => $newImage->getId(),
                     'name'      => $newImage->getName(),
                     'filename'  => $newImage->getFilename(),
+                    'nsfw'      => $newImage->getNsfw(),
                     'tags'      => $newImage->getTags()
                 );
                 

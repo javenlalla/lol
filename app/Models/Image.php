@@ -16,6 +16,9 @@ class Image
     /** @ODM\String */
     private $filename;
     
+    /** @ODM\Int */
+    private $nsfw;
+    
     /** @ODM\Collection */
     private $tags = array();
     
@@ -50,6 +53,21 @@ class Image
     public function setFilename($filename)
     {
         $this->filename = $filename;
+    }
+    
+    public function getNsfw()
+    {
+        return $this->nsfw;
+    }
+    
+    public function setNsfw($nsfw)
+    {
+        $nsfw = (int) $nsfw;
+        if($nsfw > 0) {
+            $this->nsfw = 1;
+        } else {
+            $this->nsfw = 0;
+        }
     }
     
     public function getTags()

@@ -41,10 +41,13 @@ var ImagesView = Backbone.View.extend({
         var newImageUrl = $("#newImageUrl").val();
         var newImageName = $("#newImage").val();
         var newImageTags = $("#newImageTags").val();
+        var newImageNsfw = $("#newImageNsfw").is(':checked');
+
         var newImage = new Image({
             url: newImageUrl,
             name: newImageName,
-            tags: newImageTags
+            tags: newImageTags,
+            nsfw: newImageNsfw
         });
         
         this.model.create(newImage);
