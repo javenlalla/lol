@@ -46,6 +46,10 @@ var AppRouter = Backbone.Router.extend({
                     
                     imagesView.render();
                     // console.log(images);
+                },
+                error: function(images, resp, options) {
+                    //@TODO: Better error handling.
+                    $("#content").html(resp.statusText);
                 }
             });
 
