@@ -37,14 +37,18 @@ var AppRouter = Backbone.Router.extend({
         $("#link-browse").addClass("active");
         // $(document).ready(function() {
             var images = new Images();
-            images.fetch();
-            
-            var imagesView = new ImagesView({
-                model: images,
-                el: "#content"
+            images.fetch({
+                success: function() {
+                    var imagesView = new ImagesView({
+                        model: images,
+                        el: "#content"
+                    });
+                    
+                    imagesView.render();
+                    // console.log(images);
+                }
             });
-            
-            imagesView.render();
+
             
             // $("body").append(imagesView.render().$el);
         // });

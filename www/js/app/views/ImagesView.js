@@ -2,7 +2,7 @@ var ImagesView = Backbone.View.extend({
     className   : 'container-fluid',
     
     initialize: function(options) {
-        // console.log(options);
+        this.model = options.model;
         
         this.model.on("add", this.onAddImage, this);
         this.model.on("remove", this.onRemoveImage, this);
@@ -19,14 +19,18 @@ var ImagesView = Backbone.View.extend({
         
         var self = this;
         this.model.each(function(image) {
-            self.onAddImage(image);
+            self.appendImage(image);
         });
         
         return this;
     },
     
     onAddImage: function(image) {
-        // console.log(image);
+        var imageView = new ImageView({ model: image});
+        $("#images").prepend(imageView.render().$el);
+    },
+    
+    appendImage: function(image) {
         var imageView = new ImageView({ model: image});
         $("#images").append(imageView.render().$el);
     },

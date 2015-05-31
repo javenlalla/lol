@@ -2,8 +2,9 @@
 namespace Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use DateTime;
 
-/** @ODM\Document */
+/** @ODM\Document(repositoryClass="ImageRepository") */
 class Image
 {
     /** @ODM\Id */
@@ -17,6 +18,9 @@ class Image
     
     /** @ODM\Collection */
     private $tags = array();
+    
+    /** @ODM\Date */
+    private $created;
 
     public function __construct($name)
     {
@@ -84,5 +88,15 @@ class Image
                 array_slice($this->tags, $index, 1);
             }
         }
+    }
+    
+    public function getCreated()
+    {
+        return $this->created;
+    }
+    
+    public function setCreated(DateTime $created)
+    {
+        $this->created = $created;
     }
 }

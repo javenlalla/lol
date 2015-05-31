@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Models\Image;
 use Components\FileDownloader;
+use DateTime;
 
 class ImagesController extends ControllerAbstract
 {
@@ -37,7 +38,7 @@ class ImagesController extends ControllerAbstract
     
     public function getAllImages()
     {
-        $images = $this->_app->db->getRepository('Models\Image')->findAll();
+        $images = $this->_app->db->getRepository('Models\Image')->findAllRecent();
         
         $imagesArray = array();
         foreach($images as $image) {
@@ -74,6 +75,8 @@ class ImagesController extends ControllerAbstract
                 }
                 
                 $newImage->setFilename($downloadedFilename);
+                
+                $newImage->setCreated(new DateTime());
                 
                 $this->_app->db->persist($newImage);
                 $this->_app->db->flush();
