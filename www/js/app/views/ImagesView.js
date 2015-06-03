@@ -2,6 +2,9 @@ var ImagesView = Backbone.View.extend({
     className   : 'container-fluid',
     
     initialize: function(options) {
+        this.options = options;
+        this.options.enableNsfw = false;
+        
         this.model = options.model;
         
         this.model.on("add", this.onAddImage, this);
@@ -9,7 +12,8 @@ var ImagesView = Backbone.View.extend({
     },
     
     events: {
-        "click #addNewImage": "onAddNewImage"
+        "click #addNewImage": "onAddNewImage",
+        "change #enableNsfw": "onEnableNsfw"
     },
     
     render: function() {
@@ -22,16 +26,20 @@ var ImagesView = Backbone.View.extend({
             self.appendImage(image);
         });
         
+        if(this.options.enableNsfw === true) {
+            $('#enableNsfw').prop('checked', true);
+        }
+        
         return this;
     },
     
     onAddImage: function(image) {
-        var imageView = new ImageView({ model: image});
+        var imageView = new ImageView({ setId: true, model: image});
         $("#images").prepend(imageView.render().$el);
     },
     
     appendImage: function(image) {
-        var imageView = new ImageView({ model: image});
+        var imageView = new ImageView({ setId: true, model: image});
         $("#images").append(imageView.render().$el);
     },
     
@@ -41,10 +49,13 @@ var ImagesView = Backbone.View.extend({
         var newImageUrl = $("#newImageUrl").val();
         var newImageName = $("#newImage").val();
         var newImageTags = $("#newImageTags").val();
+        var newImageNsfw = $("#newImageNsfw").is(':checked');
+
         var newImage = new Image({
             url: newImageUrl,
             name: newImageName,
-            tags: newImageTags
+            tags: newImageTags,
+            nsfw: newImageNsfw
         });
         
         this.model.create(newImage);
@@ -52,5 +63,22 @@ var ImagesView = Backbone.View.extend({
     
     onRemoveImage: function(image) {
         this.$("li#" + image.id).remove();
+    },
+    
+    onEnableNsfw: function(e) {
+        var enableNsfw = $("#enableNsfw").is(":checked");
+        this.options.enableNsfw = enableNsfw;
+        
+        var self = this;
+        this.model.fetch({
+            data: { 
+                page: 1,
+                enableNsfw: enableNsfw
+            },
+            success: function() {
+                console.log(self.model);
+                self.render();
+            }
+        });
     }
 });

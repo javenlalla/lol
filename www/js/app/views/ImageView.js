@@ -74,10 +74,12 @@ var ImageView = Backbone.View.extend({
     onSave: function() {
         var updateName = this.$el.find(".updateName").val();
         var updateTags = this.$el.find(".updateTags").val();
+        var updateNsfw = this.$el.find(".updateNsfw").is(':checked');
         
         
         this.model.set("name", updateName);
         this.model.set("tags", updateTags);
+        this.model.set("nsfw", updateNsfw);
         
         var self = this;
         this.model.save({name: updateName}, {
@@ -85,6 +87,7 @@ var ImageView = Backbone.View.extend({
                 self.render();
             },
             error: function(model, response) {
+                //@TODO: Better error handling
                 console.log('not saved');
                 console.log(response);
             }

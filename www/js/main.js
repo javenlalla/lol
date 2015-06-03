@@ -38,6 +38,10 @@ var AppRouter = Backbone.Router.extend({
         // $(document).ready(function() {
             var images = new Images();
             images.fetch({
+                data: { 
+                    page: 1,
+                    enableNsfw: $("#enableNsfw").is(":checked")
+                },
                 success: function() {
                     var imagesView = new ImagesView({
                         model: images,

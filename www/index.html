@@ -75,6 +75,14 @@
         
         <script type="text/html" id="imagesView">
             <div class="row">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="enableNsfw"> Enable NSFW Images
+                    </label>
+                </div>
+            </div>
+            
+            <div class="row">
                 <div class="center-block text-center">
                     <form>
                         <div class="form-group">
@@ -85,6 +93,12 @@
                         </div>
                         <div class="form-group">
                             <input type="text" id="newImageTags" placeholder="tag1, tag2, tag3, etc..."/>
+                        </div>
+                        
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="newImageNsfw"> NSFW
+                            </label>
                         </div>
                         
                         <button id="addNewImage" class="btn btn-default">Add</button>
@@ -98,7 +112,8 @@
         <script type="text/html" id="editImageView">
             <input type="text" value="{{name}}" class="updateName" />
             <input type="text" value="{{tagsString}}" class="updateTags" placeholder="tag1, tag2, tag3, etc.." />
-            
+            <input type="checkbox" class="updateNsfw" {{#nsfw}} checked {{/nsfw}}> NSFW
+
             <button id="save">Save</button>
         </script>
 

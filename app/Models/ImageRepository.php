@@ -7,9 +7,16 @@ use DateTime;
 
 class ImageRepository extends DocumentRepository
 {
-    public function findAllRecent()
+    public function findAllRecent($enableNsfw = false)
     {
-        return $this->createQueryBuilder('Models\Image')
+        //db.Image.update({},{$set: {nsfw: 0}},{ multi: true });
+        $qb = $this->createQueryBuilder('Models\Image');
+        
+        if($enableNsfw !== true) {
+            $qb->field('nsfw')->equals(0);
+        }
+        
+        return $qb
             ->sort('created', 'DESC')
             ->eagerCursor(true)
             ->getQuery()
