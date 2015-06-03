@@ -39,7 +39,13 @@ class ImagesController extends ControllerAbstract
     
     public function getAllImages()
     {
-        $images = $this->_app->db->getRepository('Models\Image')->findAllRecent();
+        $enableNsfwFlag = $this->_app->request->get('enableNsfw');
+        $enableNsfw = false;
+        if($enableNsfwFlag == 'true') {
+            $enableNsfw = true;
+        }
+        
+        $images = $this->_app->db->getRepository('Models\Image')->findAllRecent($enableNsfw);
         
         $imagesArray = array();
         foreach($images as $image) {
@@ -120,6 +126,12 @@ class ImagesController extends ControllerAbstract
             
             $image->setName($name);
             
+            if($params->nsfw !== true) {
+                $image->setNsfw(0);
+            } else {
+                $image->setNsfw(1);
+            }
+            
             $tagsToUpdate = array();
             
             foreach($tags as $tag) {
@@ -137,6 +149,7 @@ class ImagesController extends ControllerAbstract
             return $this->_respond(array(
                 'id'    => $image->getId(),
                 'name'  => $image->getName(),
+                'nsfw'  => $image->getNsfw(),
                 'tags'  => $image->getTags()
             ));
         }
