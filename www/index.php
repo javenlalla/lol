@@ -12,6 +12,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Models\Project;
 use Models\Image;
+use Components\User;
 
 if ( ! file_exists($vendorAutoload)) {
     throw new RuntimeException('Install dependencies to run this script.');
@@ -45,14 +46,14 @@ $app->container->singleton('db', function () {
     
     $dm = DocumentManager::create($connection, $config);
     
-    // $newProject = new Image('Pic 2');
-    // $dm->persist($newProject);
-    // $dm->flush();
-    
     return $dm;
 });
 
-$app->get('/hello/:name', 'Controllers\ImagesController:hello');
+// session_cache_limiter(false);
+// session_start();
+
+//@TODO Enable when login is functional
+// $app->get('/login', 'Controllers\AuthController:login');
 
 $app->get('/api/images/random/', 'Controllers\ImagesController:getRandomImage');
 
