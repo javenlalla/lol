@@ -19,6 +19,9 @@ class Image
     /** @ODM\Int */
     private $nsfw;
     
+    /** @ODM\ObjectId */
+    private $userId;
+    
     /** @ODM\Collection */
     private $tags = array();
     
@@ -68,6 +71,16 @@ class Image
         } else {
             $this->nsfw = 0;
         }
+    }
+    
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+    
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
     }
     
     public function getTags()

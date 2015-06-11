@@ -5,4 +5,3 @@ log/*
 www/i/*
 vendor/*
 composer.phar
-composer.lock

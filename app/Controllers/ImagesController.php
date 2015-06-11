@@ -39,12 +39,18 @@ class ImagesController extends ControllerAbstract
     
     public function getAllImages()
     {
+        //@TODO Move getUser function to a helper class possibly. Should not be two lines of code to retrieve user.
+        //@TODO Validate that a user object is found.
+        // $userComponent = new \Components\User();
+        // $user = $userComponent->getUser();
+        
         $enableNsfwFlag = $this->_app->request->get('enableNsfw');
         $enableNsfw = false;
         if($enableNsfwFlag == 'true') {
             $enableNsfw = true;
         }
         
+        // $images = $this->_app->db->getRepository('Models\Image')->findAllRecentByUserId($user->getId(), $enableNsfw);
         $images = $this->_app->db->getRepository('Models\Image')->findAllRecent($enableNsfw);
         
         $imagesArray = array();
@@ -73,10 +79,15 @@ class ImagesController extends ControllerAbstract
             $downloadedFilename = $fileDownloader->download($url);
             
             if($downloadedFilename !== false) {
+                $userComponent = new \Components\User();
+                $user = $userComponent->getUser();
+                
                 $name = trim($params->name);
                 $tags = explode(",", $params->tags);
                 
                 $newImage = new Image($name);
+                
+                $newImage->setUserId($user->getId());
                 
                 foreach($tags as $tag) {
                     $newImage->addTag(trim($tag));
@@ -159,6 +170,7 @@ class ImagesController extends ControllerAbstract
     
     public function deleteImage($id)
     {
+        //@TODO: Delete image file.
         $image = $this->_app->db->find('Models\Image', $id);
         if(!empty($image)) {
             $this->_app->db->remove($image);
