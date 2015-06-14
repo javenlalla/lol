@@ -22,15 +22,34 @@ $loader = require_once $vendorAutoload;
 $loader->add('Models', '../app');
 $loader->add('Controllers', '../app');
 $loader->add('Components', '../app');
+$loader->add('Library', '../app');
 
 $app = new \Slim\Slim( array(
     // 'debug'         => false,
     'log.enabled'   => true,
     'slim.errors'   => "../log/app.log",
     'log.level'     => \Slim\Log::DEBUG,
-    'log.writer'    => new \Slim\LogWriter(fopen('../log/app.log', 'a'))
+    'log.writer'    => new \Slim\LogWriter(fopen('../log/app.log', 'a')),
+    'templates.path' => '../app/Views',
+    'view'          => new \Library\TwigView()
 ));
 
+/*****Template*****/
+$app->view->updateDelimiterSyntax();
+// $app = new \Slim\Slim(array(
+//     'view' => new \Library\TwigView()
+// ));
+// $app->view->setTemplatesDirectory('../app/Views');
+// $twig = $app->view->getEnvironment();
+
+// $lexer = new Twig_Lexer($twig, array(
+//     'tag_comment'  => array('<%#', '%>'),
+//     'tag_block'    => array('<%', '%>'),
+//     'tag_variable' => array('<%=', '%>'),
+// ));
+// $twig->setLexer($lexer);
+
+/*****Database*****/
 $app->container->singleton('db', function () {
     $connection = new Connection();
     
@@ -54,6 +73,9 @@ $app->container->singleton('db', function () {
 
 //@TODO Enable when login is functional
 // $app->get('/login', 'Controllers\AuthController:login');
+$app->get('/', function() use ($app) {
+    $app->render('index');
+});
 
 $app->get('/api/images/random/', 'Controllers\ImagesController:getRandomImage');
 
