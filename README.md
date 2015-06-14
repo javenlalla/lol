@@ -31,6 +31,15 @@ sudo apt-get update
 sudo apt-get install php5-dev  
 sudo pecl install mongo  
 
+#Apache
+To enable SEO-friendly URLs (removing index.php from the url), include the following within the <Directory> configuration of the vhost:
+    <IfModule mod_rewrite.c>
+        Options -MultiViews
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    </IfModule>
+
 #Cache
 sudo pecl install apc OR sudo apt-get install php-apc  
 sudo service apache2 restart  
