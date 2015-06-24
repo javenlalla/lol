@@ -52,18 +52,24 @@ $app->view->updateDelimiterSyntax();
 // ));
 // $twig->setLexer($lexer);
 
+/*****Configuration*****/
+$app->container->singleton('config', function () {
+    $configurationComponent = new \Components\Configuration();
+    return $configurationComponent->getConfiguration();
+});
+
 /*****Database*****/
-$app->container->singleton('db', function () {
+$app->container->singleton('db', function () use ($app) {
     $paths = array("../app/Models");
     $isDevMode = true;
-    
+
     // the connection configuration
     $dbParams = array(
         'driver'   => 'pdo_mysql',
-        'host'     => getenv('IP'),
-        'user'     => getenv('C9_USER'),
-        'password' => '',
-        'dbname'   => 'lol',
+        'host'     => $app->config->database->host, //getenv('IP'),
+        'user'     => $app->config->database->user,
+        'password' => $app->config->database->password,
+        'dbname'   => $app->config->database->dbname,
     );
     
     $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
