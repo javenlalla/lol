@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Models\Image;
+use Models\Tag;
 use Components\FileDownloader;
 use DateTime;
 
@@ -11,30 +12,54 @@ class ImagesController extends ControllerAbstract
     public function getRandomImage()
     {
         //@TODO: Exclude NSWF Images
-        $imagesCount = $this->_app->db->createQueryBuilder('Models\Image')
-            ->count()
-            ->eagerCursor(true)
-            ->getQuery()
-            ->execute();
+        $dql = "
+            SELECT COUNT(b.id)
+            FROM Models\Image b
+        ";
+        $query = $this->_app->db->createQuery($dql);
+        $imagesCount = (int) $query->getSingleScalarResult();
         
-        $imagesCount--;
+        $randomIndex = rand(1, $imagesCount - 1);
         
-        $randomIndex = rand(0, $imagesCount);
-        
-        $image = $this->_app->db->createQueryBuilder('Models\Image')
-            ->limit(1)
-            ->skip($randomIndex)
-            ->getQuery()
-            ->getSingleResult();
-        
+        $dql = "
+            SELECT b
+            FROM Models\Image b
+        ";
+
+        $query = $this->_app->db->createQuery($dql);
+        $query->setFirstResult($randomIndex);
+        $query->setMaxResults(1);
+        $image = $query->getArrayResult();
         return $this->_respond(
-            array(
-                'id'        => $image->getId(),
-                'name'      => $image->getName(),
-                'filename'  => $image->getFilename(),
-                'tags'      => $image->getTags()
-            )
+            $image[0]
         );
+        
+        
+        // //@TODO: Exclude NSWF Images
+        // $imagesCount = $this->_app->db->createQueryBuilder('Models\Image')
+        //     ->count()
+        //     ->eagerCursor(true)
+        //     ->getQuery()
+        //     ->execute();
+        
+        // $imagesCount--;
+        
+        // $randomIndex = rand(0, $imagesCount);
+        
+        // $image = $this->_app->db->createQueryBuilder('Models\Image')
+        //     ->limit(1)
+        //     ->skip($randomIndex)
+        //     ->getQuery()
+        //     ->getSingleResult();
+        
+        // return $this->_respond(
+        //     array(
+        //         'id'        => $image->getId(),
+        //         'name'      => $image->getName(),
+        //         'filename'  => $image->getFilename(),
+        //         'tags'      => $image->getTags()
+        //     )
+        // );
     }
     
     public function getAllImages()
@@ -59,8 +84,8 @@ class ImagesController extends ControllerAbstract
                 'id'        => $image->getId(),
                 'name'      => $image->getName(),
                 'filename'  => $image->getFilename(),
-                'nsfw'      => $image->getNsfw(),
-                'tags'      => $image->getTags()
+                'nsfw'      => $image->getIsNsfw(),
+                'tags'      => $image->getTagsArray()
             );
         }
         
@@ -79,26 +104,28 @@ class ImagesController extends ControllerAbstract
             $downloadedFilename = $fileDownloader->download($url);
             
             if($downloadedFilename !== false) {
-                $userComponent = new \Components\User();
-                $user = $userComponent->getUser();
+                // $userComponent = new \Components\User();
+                // $user = $userComponent->getUser();
                 
                 $name = trim($params->name);
-                $tags = explode(",", $params->tags);
-                
                 $newImage = new Image($name);
                 
-                $newImage->setUserId($user->getId());
+                // $newImage->setUserId($user->getId());
                 
+                $tags = explode(",", $params->tags);
                 foreach($tags as $tag) {
-                    $newImage->addTag(trim($tag));
+                    $tag = trim($tag);
+                    if(!empty($tag)) {
+                        $newImage->addTag(new Tag($tag));
+                    }
                 }
                 
                 $newImage->setFilename($downloadedFilename);
                 
                 if($params->nsfw !== true) {
-                    $newImage->setNsfw(0);
+                    $newImage->setIsNsfw(0);
                 } else {
-                    $newImage->setNsfw(1);
+                    $newImage->setIsNsfw(1);
                 }
                 
                 $newImage->setCreated(new DateTime());
@@ -110,8 +137,8 @@ class ImagesController extends ControllerAbstract
                     'id'        => $newImage->getId(),
                     'name'      => $newImage->getName(),
                     'filename'  => $newImage->getFilename(),
-                    'nsfw'      => $newImage->getNsfw(),
-                    'tags'      => $newImage->getTags()
+                    'nsfw'      => $newImage->getIsNsfw(),
+                    'tags'      => $newImage->getTagsArray()
                 );
                 
                 return $this->_respond($imageArray);
@@ -138,30 +165,60 @@ class ImagesController extends ControllerAbstract
             $image->setName($name);
             
             if($params->nsfw !== true) {
-                $image->setNsfw(0);
+                $image->setIsNsfw(0);
             } else {
-                $image->setNsfw(1);
+                $image->setIsNsfw(1);
             }
             
-            $tagsToUpdate = array();
+            // $tagsToUpdate = array();
             
-            foreach($tags as $tag) {
-                $tagToUpdate = trim($tag);
-                if(!empty($tagToUpdate)) {
-                    $tagsToUpdate[] = trim($tag);
+            // foreach($tags as $tag) {
+            //     $tagToUpdate = trim($tag);
+            //     if(!empty($tagToUpdate)) {
+            //         $tagsToUpdate[] = trim($tag);
+            //     }
+            // }
+            
+            $currentTags = $image->getTagsArray();
+            $tagsNoChanges = array_intersect($tags, $currentTags);
+            foreach($currentTags as $key => $value) {
+                if(in_array($value, $tagsNoChanges)) {
+                    unset($currentTags[$key]);
                 }
             }
             
-            $image->updateTags($tagsToUpdate);
+            foreach($tags as $key => $value) {
+                if(in_array($value, $tagsNoChanges)) {
+                    unset($tags[$key]);
+                }
+            }
             
+            foreach($tags as $tag) {
+                $tag = trim($tag);
+                if(!empty($tag)) {
+                    $image->addTag(new Tag($tag));
+                }
+            }
+            
+            //Loop through tags that should be removed.
+            foreach($currentTags as $tag) {
+                $criteria = \Doctrine\Common\Collections\Criteria::create()
+                    ->where(\Doctrine\Common\Collections\Criteria::expr()->eq("tag", $tag))
+                    ->setMaxResults(1)
+                ;
+                $tagFetch = $image->getTags()->matching($criteria);
+                $image->removeTag($tagFetch[0]);
+                $this->_app->db->remove($tagFetch[0]);
+            }
+
             $this->_app->db->persist($image);
             $this->_app->db->flush();
             
             return $this->_respond(array(
                 'id'    => $image->getId(),
                 'name'  => $image->getName(),
-                'nsfw'  => $image->getNsfw(),
-                'tags'  => $image->getTags()
+                'nsfw'  => $image->getIsNsfw(),
+                'tags'  => $image->getTagsArray()
             ));
         }
         

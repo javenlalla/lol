@@ -53,3 +53,7 @@ composer install
 sudo rm /var/lib/mongodb/mongod.lock    
 sudo service mongodb restart    
  
+#MySQL Migration
+mongoexport --db doctrine_odm --collection Image --csv --fieldFile /home/ubuntu/workspace/data/imagesFields.txt --out /home/ubuntu/workspace/data/images.csv   
+mongoexport --db doctrine_odm --collection User --csv --fieldFile /home/ubuntu/workspace/data/usersFields.txt --out /home/ubuntu/workspace/data/users.csv   
+In MySQL CLI: source bin/sql/create_tables.sql;   

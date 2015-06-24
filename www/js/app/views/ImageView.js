@@ -99,6 +99,7 @@ var ImageView = Backbone.View.extend({
         jsonModel.tagsString = "";
         if(this.model.has("tags") && this.model.get("tags").length > 0) {
             var tags = this.model.get("tags");
+            console.log(tags);
             var tagsString = '';
             for(var i = 0; i < tags.length; i++) {
                 tagsString += tags[i] + ", ";
