@@ -1,14 +1,32 @@
 <?php
 namespace Models;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ODM\MongoDB\DocumentRepository;
-use DateTime;
+use Doctrine\ORM\EntityRepository;
 
-class ImageRepository extends DocumentRepository
+class ImageRepository extends EntityRepository
 {
     public function findAllRecent($enableNsfw = false)
     {
+        $dql = "
+            SELECT b, t
+            FROM Models\Image b
+                LEFT JOIN b.tags t
+        ";
+        
+        if($enableNsfw !== true) {
+            $dql .= " WHERE b.is_nsfw = 0";
+        }
+        
+        $dql .= " ORDER BY b.created DESC";
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        // $query->setMaxResults(30);
+        // $images = $query->getResult();
+        
+        return $query->getResult();
+        
+        echo json_encode($images);
+        
         //db.Image.update({},{$set: {nsfw: 0}},{ multi: true });
         $qb = $this->createQueryBuilder('Models\Image');
         

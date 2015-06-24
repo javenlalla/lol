@@ -14,6 +14,9 @@ use Models\Project;
 use Models\Image;
 use Components\User;
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
 if ( ! file_exists($vendorAutoload)) {
     throw new RuntimeException('Install dependencies to run this script.');
 }
@@ -51,21 +54,40 @@ $app->view->updateDelimiterSyntax();
 
 /*****Database*****/
 $app->container->singleton('db', function () {
-    $connection = new Connection();
+    $paths = array("../app/Models");
+    $isDevMode = true;
     
-    $config = new Configuration();
-    $config->setProxyDir(__DIR__ . '/Proxies');
-    $config->setProxyNamespace('Proxies');
-    $config->setHydratorDir(__DIR__ . '/Hydrators');
-    $config->setHydratorNamespace('Hydrators');
-    $config->setDefaultDB('doctrine_odm');
-    $config->setMetadataDriverImpl(AnnotationDriver::create(__DIR__ . '/Documents'));
+    // the connection configuration
+    $dbParams = array(
+        'driver'   => 'pdo_mysql',
+        'host'     => getenv('IP'),
+        'user'     => getenv('C9_USER'),
+        'password' => '',
+        'dbname'   => 'lol',
+    );
     
-    AnnotationDriver::registerAnnotationClasses();
+    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+    $config->setSQLLogger(new \Library\ModelsLogger());
     
-    $dm = DocumentManager::create($connection, $config);
+    $entityManager = EntityManager::create($dbParams, $config);
     
-    return $dm;
+    return $entityManager;
+    
+    // $connection = new Connection();
+    
+    // $config = new Configuration();
+    // $config->setProxyDir(__DIR__ . '/Proxies');
+    // $config->setProxyNamespace('Proxies');
+    // $config->setHydratorDir(__DIR__ . '/Hydrators');
+    // $config->setHydratorNamespace('Hydrators');
+    // $config->setDefaultDB('doctrine_odm');
+    // $config->setMetadataDriverImpl(AnnotationDriver::create(__DIR__ . '/Documents'));
+    
+    // AnnotationDriver::registerAnnotationClasses();
+    
+    // $dm = DocumentManager::create($connection, $config);
+    
+    // return $dm;
 });
 
 // session_cache_limiter(false);
@@ -75,6 +97,23 @@ $app->container->singleton('db', function () {
 // $app->get('/login', 'Controllers\AuthController:login');
 $app->get('/', function() use ($app) {
     $app->render('index');
+});
+
+$app->get('/db', function() use ($app) {
+    // var_dump($app->db);
+    $dql = "SELECT b, t FROM Models\Image b LEFT JOIN b.tags t ORDER BY b.created DESC";
+
+    $query = $app->db->createQuery($dql);
+    // $query->setMaxResults(30);
+    $images = $query->getArrayResult();
+    echo json_encode($images);
+    // foreach($images as $image) {
+    //     echo $image->getId()."<br />";
+    //     $tags = $image->getTags();
+    //     foreach($tags as $tag) {
+    //         echo $tag->getTag()."<br />";
+    //     }
+    // }
 });
 
 $app->get('/api/images/random/', 'Controllers\ImagesController:getRandomImage');

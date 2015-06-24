@@ -4,6 +4,7 @@
         "doctrine/mongodb-odm": "~1.0.0-BETA10@dev",
         "google/apiclient": "1.0.*@beta",
         "slim/views": "0.1.*",
-        "twig/twig": "~1.18"
+        "twig/twig": "~1.18",
+        "doctrine/orm": "~2.5"
     }
 }
