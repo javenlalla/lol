@@ -31,6 +31,10 @@ sudo apt-get update
 sudo apt-get install php5-dev  
 sudo pecl install mongo  
 
+#ImageMagick
+sudo apt-get install imagemagick   
+Enable extension in php.ini: extension=imagick.so
+
 #Apache
 To enable SEO-friendly URLs (removing index.php from the url), include the following within the <Directory> configuration of the vhost:
     <IfModule mod_rewrite.c>

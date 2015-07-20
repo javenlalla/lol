@@ -1,0 +1,148 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Images</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <!--<link rel="stylesheet" href="css/normalize.css">-->
+        <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <style>
+            /*.grid-item { width: 200px; }*/
+            .grid-item--width2 { width: 1024px; }
+        </style>
+        
+    </head>
+<body>
+<!--<div class="grid">-->
+    
+        <div id="images" style="position: relative; height: 363px;">
+            <!--<div class="img-block" id="41">-->
+            <!--    <img src="i/2iCBOU_b.png" alt="al bundy" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="35">-->
+            <!--    <img src="i/9bOHtH_b.jpg" alt="adfdf" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="28">-->
+            <!--    <img src="i/ngUpX8_b.jpg" alt="Jennifer Lawrence" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="27">-->
+            <!--    <img src="i/UERqXf_b.jpg" alt="wow2" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="26">-->
+            <!--    <img src="i/Zbl14z_b.jpg" alt="wow1" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="24">-->
+            <!--    <img src="i/MOBIOI_b.jpg" alt="Colbert" class="image-item">-->
+            <!--</div>-->
+            
+            <!--<div class="img-block" id="1">-->
+            <!--    <img src="i/JHA1VI_b.png" alt="monsters 2" class="image-item">-->
+            <!--</div>-->
+
+        </div>
+        
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/fwGkbT.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/g8PVMQ.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/qMNoZF.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/xWfato.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/zIgIWL.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/F2YIzl.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/y47rcI.jpg" alt="Vampire Backs Away">-->
+        <!--</div>        -->
+        
+        <!--<div class="grid-item">-->
+        <!--    <img src="i/QmAbdq_b.jpg" alt="Vampire Backs Away">-->
+        <!--</div>-->
+        
+        <!--</div>-->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>
+        <script src="js/vendor/imagesloaded.pkgd.min.js"></script>
+        
+        
+        <script type="text/javascript">
+        $(document).ready(function() {
+            var $grid = $("#images").masonry({
+                  // options
+                  itemSelector: '.img-block',
+                  columnWidth: 200
+                });
+            
+            // var $grid = $('#images').imagesLoaded(function() {
+            //     $grid.masonry({
+            //       // options
+            //       itemSelector: '.img-block',
+            //       columnWidth: 200
+            //     });
+            // });
+            
+            $.ajax({
+                method: "GET",
+                url: "https://images-javenlalla.c9.io/index.php/api/images?page=1&enableNsfw=false",
+                dataType: 'json'
+            })
+                  .done(function( data ) {
+                    for(var i = 0; i < data.length; i++) {
+                        var html = '<div class="img-block" id="'
+                        + data[i].id + '"><img src="i/'+data[i].compressed_filename+'" alt="'
+                        +data[i].name+'" class="image-item"></div>';
+                        var el = jQuery(html);
+                        console.log(el);
+                        $('#images').append(el).masonry('appended', el);
+                        $grid.imagesLoaded().done( function() {
+                            $grid.masonry('layout');
+                        });
+                        // $grid.imagesLoaded().done( function() {
+                        //   console.log('loading');
+                        //   $grid.masonry('layout');
+                        // });
+                    }
+                  });
+             
+             
+            // $('#images').masonry({
+            //   // options
+            //   itemSelector: '.img-block',
+            //   columnWidth: 200
+            // });
+            
+        });
+        
+        //  $(window).load(function() {
+        //  });
+        </script>
+        </body>
+        </html>

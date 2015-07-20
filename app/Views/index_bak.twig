@@ -37,15 +37,12 @@
           </div>
         </nav>
         
-        <div id="content">
+        <div id="content" class="container-fluid">
             
         </div>
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>
-        <script src="js/vendor/imagesloaded.pkgd.min.js"></script>
         <script src="js/vendor/underscore.min.js"></script>
         <script src="js/vendor/mustache.min.js"></script>
         <script src="js/vendor/backbone.min.js"></script>
@@ -57,31 +54,23 @@
         <script src="js/main.js"></script>
         
         <script type="text/html" id="imageView">
-            
-            <img src ="i/{{compressed_filename}}" alt="{{name}}" class="image-item">
-            
-            {{!<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>}}
-
-            <div id="modal-{{id}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                <div class="modal-dialog">
-                    <div class="modal-content center-block text-center">
-                        <div class="image-actions">
-                            <button class="edit btn btn-primary">Edit</button>
-                            <button class="delete btn btn-danger">Delete</button>
-                        </div>
-                        
-                        <div class="image-edit hidden">
-                            <input type="text" value="{{name}}" class="updateName" />
-                            <input type="text" value="{{tagsString}}" class="updateTags" placeholder="tag1, tag2, tag3, etc.." />
-                            <input type="checkbox" class="updateNsfw" {{#nsfw}} checked {{/nsfw}}> NSFW
-                
-                            <button class="save">Save</button>
-                        </div>
-                        
-                        <img id="modal-image-{{id}}" alt="{{name}}" class="image-item-modal">
-                    </div>
+            <h1>{{name}}</h1>
+            <button id="edit" class="btn btn-primary">Edit</button>
+            <button id="delete" class="btn btn-danger">Delete</button>
+            {{#hasTags}}
+                <div class="tags">
+                    {{#tags}}
+                        <span class="bg-info">{{.}}</span>
+                    {{/tags}}
                 </div>
-            </div>
+                <!--<ul class="tags">
+                    {{#tags}}
+                        <li>{{.}}</li>
+                    {{/tags}}
+                </ul>-->
+            {{/hasTags}}
+            
+            <img src ="i/{{filename}}" alt="{{name}}">
         </script>
         
         <script type="text/html" id="imagesView">
@@ -114,9 +103,9 @@
                         
                         <button id="addNewImage" class="btn btn-default">Add</button>
                     </form>
-                </div>
                     
-                <div id="images"></div>
+                    <ul id="images" class="list-unstyled"></ul>
+                </div>
             </div>
         </script>
         

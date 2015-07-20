@@ -1,0 +1,1 @@
+ALTER TABLE lol.images ADD COLUMN compressed_filename VARCHAR(50) NOT NULL AFTER filename;

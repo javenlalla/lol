@@ -29,6 +29,12 @@ class Image
     private $filename;
     
     /**
+     * @Column(type="string")
+     * @var string
+     */
+    private $compressed_filename;
+    
+    /**
      * @Column(type="integer")
      * @var int
      */
@@ -80,6 +86,16 @@ class Image
     public function setFilename($filename)
     {
         $this->filename = $filename;
+    }
+    
+    public function getCompressedFilename()
+    {
+        return $this->compressed_filename;
+    }
+    
+    public function setCompressedFilename($filename)
+    {
+        $this->compressed_filename = $filename;
     }
     
     public function getIsNsfw()
