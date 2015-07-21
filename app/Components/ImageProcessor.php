@@ -4,10 +4,15 @@ namespace Components;
 
 class ImageProcessor extends ComponentAbstract
 {
-    const IMAGES_FOLDER_PATH = "i/";
+    protected $_imagesFolderPath = "i/";
     
-    public function compressImage($imageFilename)
+    public function compressImage($imageFilename, $imagesFolderPath = null)
     {
+        if(!empty($imagesFolderPath)) {
+            //@TODO: Do additional verification to ensure path exists.
+            $this->_imagesFolderPath = $imagesFolderPath;
+        }
+        
         $filenameParts = $this->_getFilenameParts($imageFilename);
         
         //If image is a gif, get first frame and use that as thumb base.
@@ -45,7 +50,7 @@ class ImageProcessor extends ComponentAbstract
     {
         $gifFrameFilename = $this->_getImageBaseName($filenameParts['name']) . ".jpg";
         
-        $commandBase = "convert ".self::IMAGES_FOLDER_PATH."'%s[0]' ".self::IMAGES_FOLDER_PATH."%s";
+        $commandBase = "convert ".$this->_imagesFolderPath."'%s[0]' ".$this->_imagesFolderPath."%s";
         
         $command = sprintf($commandBase, $filenameParts['filename'], $gifFrameFilename);
         shell_exec($command);
@@ -58,8 +63,8 @@ class ImageProcessor extends ComponentAbstract
         $imageBaseFilename = $this->_getImageBaseName($filenameParts['name']);
         $imageBaseFilename .= ".".$filenameParts['extension'];
         
-        $src = self::IMAGES_FOLDER_PATH.$filenameParts['filename'];
-        $dest = self::IMAGES_FOLDER_PATH.$imageBaseFilename;
+        $src = $this->_imagesFolderPath.$filenameParts['filename'];
+        $dest = $this->_imagesFolderPath.$imageBaseFilename;
         
         //@TODO Error Handling if 'copy' fails.
         copy($src, $dest);
@@ -74,7 +79,7 @@ class ImageProcessor extends ComponentAbstract
     
     private function _compressImage($filename)
     {
-        $filenamePath = self::IMAGES_FOLDER_PATH.$filename;
+        $filenamePath = $this->_imagesFolderPath.$filename;
         $commandBase = "convert -resize 200x -strip -interlace Plane -gaussian-blur 0.05 -quality 80%% %s %s";
         
         $command = sprintf($commandBase, $filenamePath, $filenamePath);
