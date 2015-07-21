@@ -65,6 +65,14 @@
             <div id="modal-{{id}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content center-block text-center">
+                        <h1>{{name}}</h1>
+                        {{#hasTags}}
+                            <div class="tags">
+                                {{#tags}}
+                                    <span class="bg-info">{{.}}</span>
+                                {{/tags}}
+                            </div>
+                        {{/hasTags}}
                         <div class="image-actions">
                             <button class="edit btn btn-primary">Edit</button>
                             <button class="delete btn btn-danger">Delete</button>
