@@ -1,4 +1,4 @@
-var Image = Backbone.Model.extend({
+var LolImage = Backbone.Model.extend({
     urlRoot: "index.php/api/images",
     
     // fetchRandom: function() {

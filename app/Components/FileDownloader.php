@@ -31,7 +31,7 @@ class FileDownloader extends ComponentAbstract
             
             return false;
         } else {
-            throw new Exception("Setting 'allow_url_fopen' disabled.");
+            throw new \Exception("Setting 'allow_url_fopen' disabled.");
         }
     }
     
@@ -73,7 +73,7 @@ class FileDownloader extends ComponentAbstract
     {
         if(!is_dir(self::IMAGES_FOLDER)) {
             if(!mkdir(self::IMAGES_FOLDER)) {
-                throw new Exception("Unable to create images directory.");
+                throw new \Exception("Unable to create images directory.");
             }
         }
     }

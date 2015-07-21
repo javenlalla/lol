@@ -1,5 +1,5 @@
 var Images = Backbone.Collection.extend({
-    model: Image,
+    model: LolImage,
     
     url: "index.php/api/images"
 });

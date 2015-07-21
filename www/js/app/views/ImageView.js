@@ -1,5 +1,7 @@
 var ImageView = Backbone.View.extend({
-    tagName: "li",
+    tagName: "div",
+    
+    className: "img-block",
     
     options: {
         setId: true
@@ -12,9 +14,11 @@ var ImageView = Backbone.View.extend({
     },
     
     events: {
-        "click #delete": "onDelete",
-        "click #edit": "onEdit",
-        "click #save": "onSave",
+        "click .delete": "onDelete",
+        "click .edit": "onEdit",
+        "click .save": "onSave",
+        "click .image-item": "onFocus"//,
+        // "mouseleave .image-item": "unFocus"
     },
     
     render: function() {
@@ -25,6 +29,7 @@ var ImageView = Backbone.View.extend({
         var template = $("#imageView").html();
         
         jsonModel = this.model.toJSON();
+        jsonModel = this.processTags(jsonModel);
         jsonModel.hasTags = false;
         if(this.model.has("tags") && this.model.get("tags").length > 0) {
             jsonModel.hasTags = true;
@@ -63,15 +68,30 @@ var ImageView = Backbone.View.extend({
     },
     
     onDelete: function() {
-        this.model.destroy();
+        var modalTarget = "#modal-" + this.model.get('id');
+        var divTarget = "div#" + this.model.get('id');
+        var self = this;
+        this.model.destroy({
+            success: function(model, response){
+                $(modalTarget).modal('hide');
+                $(divTarget).remove();
+                // $(divTarget).remove().masonry('remove', divTarget);
+            }
+        });
     },
     
     onEdit: function() {
-        console.log("editing");
-        this.renderEdit();
+        // this.renderEdit();
+        var modalTarget = "#modal-" + this.model.get('id');
+        
+        $(modalTarget).find(".image-actions").hide();
+        $(modalTarget).find(".image-edit").removeClass('hidden');
     },
     
     onSave: function() {
+        // this.undelegateEvents();
+        this.model.off("change");
+        
         var updateName = this.$el.find(".updateName").val();
         var updateTags = this.$el.find(".updateTags").val();
         var updateNsfw = this.$el.find(".updateNsfw").is(':checked');
@@ -84,7 +104,10 @@ var ImageView = Backbone.View.extend({
         var self = this;
         this.model.save({name: updateName}, {
             success: function(model, response) {
-                self.render();
+                // self.render();
+                var modalTarget = "#modal-" + self.model.get('id');
+                $(modalTarget).find(".image-actions").show();
+                $(modalTarget).find(".image-edit").addClass('hidden');
             },
             error: function(model, response) {
                 //@TODO: Better error handling
@@ -94,12 +117,43 @@ var ImageView = Backbone.View.extend({
         });
     },
     
+    onFocus: function(e) {
+        var modalTarget = "#modal-" + this.model.get('id');
+        var modalTargetImage = "#modal-image-" + this.model.get('id');
+        
+        $(modalTargetImage).attr('src', "i/" + this.model.get('filename')).one("load", function() {
+            $(modalTarget).on('shown.bs.modal', function () {
+                var modalContentWidth = $(this).find('img').width() + "px";
+                    $(this).find('.modal-dialog').css({
+                    'width':modalContentWidth
+                });
+            }).modal();
+        });
+        
+        // console.log($("#modal-image-1").width());
+        // $(modalTarget).modal();
+        
+        
+        // var $imageEl = e.target;
+        
+        // $($imageEl).css({
+        //     "z-index": "1000",
+        //     "margin": "0 auto",
+        //     "position": "relative",
+        //     "display": "block"}).attr('src', "i/" + this.model.get('filename'));
+    },
+    
+    unFocus: function(e) {
+        var $imageEl = e.target;
+        
+        $($imageEl).attr('src', "i/" + this.model.get('compressed_filename'));
+    },
+    
     processTags: function(jsonModel) {
         jsonModel.hasTags = false;
         jsonModel.tagsString = "";
         if(this.model.has("tags") && this.model.get("tags").length > 0) {
             var tags = this.model.get("tags");
-            console.log(tags);
             var tagsString = '';
             for(var i = 0; i < tags.length; i++) {
                 tagsString += tags[i] + ", ";

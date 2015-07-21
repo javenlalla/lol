@@ -285,3 +285,11 @@ textarea {
 body {
     padding-top: 55px;
 }
+
+.image-item {
+    cursor: pointer;
+}
+
+.img-block {
+    width: 200px;
+}

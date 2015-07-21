@@ -5,6 +5,7 @@ namespace Controllers;
 use Models\Image;
 use Models\Tag;
 use Components\FileDownloader;
+use Components\ImageProcessor;
 use DateTime;
 
 class ImagesController extends ControllerAbstract
@@ -84,6 +85,7 @@ class ImagesController extends ControllerAbstract
                 'id'        => $image->getId(),
                 'name'      => $image->getName(),
                 'filename'  => $image->getFilename(),
+                'compressed_filename' => $image->getCompressedFilename(),
                 'nsfw'      => $image->getIsNsfw(),
                 'tags'      => $image->getTagsArray()
             );
@@ -100,12 +102,18 @@ class ImagesController extends ControllerAbstract
         if(!empty($params->name)) {
             $url = trim($params->url);
             
+            //Download image.
             $fileDownloader = new FileDownloader();
             $downloadedFilename = $fileDownloader->download($url);
+            
             
             if($downloadedFilename !== false) {
                 // $userComponent = new \Components\User();
                 // $user = $userComponent->getUser();
+                
+                //Get compressed version of image.
+                $imageProcessor = new ImageProcessor();
+                $compressedImageFilename = $imageProcessor->compressImage($downloadedFilename);
                 
                 $name = trim($params->name);
                 $newImage = new Image($name);
@@ -121,6 +129,7 @@ class ImagesController extends ControllerAbstract
                 }
                 
                 $newImage->setFilename($downloadedFilename);
+                $newImage->setCompressedFilename($compressedImageFilename);
                 
                 if($params->nsfw !== true) {
                     $newImage->setIsNsfw(0);
@@ -137,6 +146,7 @@ class ImagesController extends ControllerAbstract
                     'id'        => $newImage->getId(),
                     'name'      => $newImage->getName(),
                     'filename'  => $newImage->getFilename(),
+                    'compressed_filename' => $newImage->getCompressedFilename(),
                     'nsfw'      => $newImage->getIsNsfw(),
                     'tags'      => $newImage->getTagsArray()
                 );

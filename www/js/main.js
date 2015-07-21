@@ -34,6 +34,8 @@ var AppRouter = Backbone.Router.extend({
     },
     
     browseAction: function() {
+        
+    
         $("#link-browse").addClass("active");
         // $(document).ready(function() {
             var images = new Images();
@@ -49,6 +51,7 @@ var AppRouter = Backbone.Router.extend({
                     });
                     
                     imagesView.render();
+                    
                     // console.log(images);
                 },
                 error: function(images, resp, options) {
