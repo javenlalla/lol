@@ -13,29 +13,35 @@ var AppRouter = Backbone.Router.extend({
     },
     
     homeAction: function() {
+        if($("#link-browse").hasClass("active")) {
+            $("#link-browse").removeClass("active");
+        }    
+        $("#link-index").addClass("active");
+        
         //@TODO, move this Model to it's own JS file.
         var RandomImage = Backbone.Model.extend({
             url: "index.php/api/images/random",
         });
         
         var image = new RandomImage();
-        image.fetch();
-        
-        //@TODO Refactor random image heading.
-        var imageView = new ImageView({
-            model: image,
-            el: "#content",
-            setId: false
+        image.fetch({
+            success: function() {
+                var imageView = new RandomImageView({
+                    model: image,
+                    el: "#content",
+                    setId: false
+                });
+                
+                imageView.render();
+            }
         });
         
-        imageView.render();
-        
-        $("#content").prepend("<h1>Random Image</h1>");
     },
     
     browseAction: function() {
-        
-    
+        if($("#link-index").hasClass("active")) {
+            $("#link-index").removeClass("active");
+        }    
         $("#link-browse").addClass("active");
         // $(document).ready(function() {
             var images = new Images();
